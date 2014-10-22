@@ -10,6 +10,19 @@ namespace FiledRecipes.Domain
     /// </summary>
     public class RecipeRepository : IRecipeRepository
     {
+        public void Save()
+        {
+
+        }
+
+        public void Load()
+        {
+            //Skapa lista som kan innehålla referenser till receptobjekt
+
+            //List<Recipe> recipes = new List<>();
+
+        }
+
         /// <summary>
         /// Represents the recipe section.
         /// </summary>
