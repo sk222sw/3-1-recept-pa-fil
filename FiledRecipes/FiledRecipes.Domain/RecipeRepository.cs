@@ -10,16 +10,75 @@ namespace FiledRecipes.Domain
     /// </summary>
     public class RecipeRepository : IRecipeRepository
     {
-        public void Save()
-        {
 
-        }
 
         public void Load()
         {
             //Skapa lista som kan innehålla referenser till receptobjekt
+            
+            List<Recipe> recipes = new List<Recipe>();
 
-            //List<Recipe> recipes = new List<>();
+            Recipe thisRecipe = null;
+
+            RecipeReadStatus status = new RecipeReadStatus();
+
+            _path = @"..\Recipes.txt";
+
+            using (StreamReader reader = new StreamReader(_path))
+            {
+                string line = null;
+                while ((line = reader.ReadLine()) != null)
+                {
+
+
+                    switch (line)
+                    {
+                        case SectionRecipe:
+                            status = RecipeReadStatus.New;
+                            continue;
+                        case SectionIngredients:
+                            status = RecipeReadStatus.Ingredient;
+                            continue;
+                        case SectionInstructions:
+                            status = RecipeReadStatus.Instruction;
+                            continue;
+                    }
+
+                    switch (status)
+                    {
+                        case RecipeReadStatus.Indefinite:
+                            break;
+                        case RecipeReadStatus.New:
+                            Recipe recipe = new Recipe(line);
+                            break;
+                        case RecipeReadStatus.Ingredient:
+                            string[] ingredients = line.Split(';', ' ');
+                                if (ingredients.Length % 3 != 0)
+                                {
+                                    throw new FileFormatException();
+                                }
+                                Ingredient ingredient = new Ingredient();
+                                ingredient.Amount = ingredients[0];
+                                ingredient.Measure = ingredients[1];
+                                ingredient.Name = ingredients[2];
+
+                                thisRecipe.Add(SectionIngredients);
+                            break;
+                        case RecipeReadStatus.Instruction:
+                            thisRecipe.Add(SectionInstructions);
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                    
+                }
+            }
+
+        }
+
+        public void Save()
+        {
 
         }
 
