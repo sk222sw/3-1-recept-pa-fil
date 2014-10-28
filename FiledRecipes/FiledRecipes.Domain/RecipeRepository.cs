@@ -30,30 +30,30 @@ namespace FiledRecipes.Domain
                 while ((line = reader.ReadLine()) != null)
                 {
 
-
-                    switch (line)
+                    if (line != null)
                     {
-                        case SectionRecipe:
+                        if (line == SectionRecipe)
+                        {
                             status = RecipeReadStatus.New;
-                            continue;
-                        case SectionIngredients:
+                        }
+                        else if (line == SectionIngredients)
+                        {
                             status = RecipeReadStatus.Ingredient;
-                            continue;
-                        case SectionInstructions:
+                        }
+                        else if (line == SectionInstructions)
+                        {
                             status = RecipeReadStatus.Instruction;
-                            continue;
-                    }
-
-                    switch (status)
-                    {
-                        case RecipeReadStatus.Indefinite:
-                            break;
-                        case RecipeReadStatus.New:
-                            Recipe recipe = new Recipe(line);
-                            break;
-                        case RecipeReadStatus.Ingredient:
-                            string[] ingredients = line.Split(';', ' ');
-                                if (ingredients.Length % 3 != 0)
+                        }
+                        else
+                        {
+                            if (status == RecipeReadStatus.New)
+                            {
+                                thisRecipe = new Recipe(line);
+                            }
+                            else if (status == RecipeReadStatus.Ingredient)
+                            {
+                                string[] ingredients = line.Split(';');
+                                if (ingredients.Length != 0)
                                 {
                                     throw new FileFormatException();
                                 }
@@ -62,15 +62,18 @@ namespace FiledRecipes.Domain
                                 ingredient.Measure = ingredients[1];
                                 ingredient.Name = ingredients[2];
 
-                                thisRecipe.Add(SectionIngredients);
-                            break;
-                        case RecipeReadStatus.Instruction:
-                            thisRecipe.Add(SectionInstructions);
-                            break;
-                        default:
-                            break;
-                    }
-                    
+                                thisRecipe.Add(ingredient);
+                            }
+                            else if (status == RecipeReadStatus.Instruction)
+                            {
+                                thisRecipe.Add(line);
+                            }
+                            else
+                            {
+                                throw new FileFormatException();
+                            }
+                        }
+                    }                
                     
                 }
             }
