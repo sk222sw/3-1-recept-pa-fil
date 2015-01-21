@@ -14,12 +14,34 @@ namespace FiledRecipes.Views
     {
         public void Show(IRecipe recipe)
         {
-            throw new NotImplementedException();
+            Console.Clear();
+            Header = recipe.Name;
+            ShowHeaderPanel();
+            Console.WriteLine();
+            Console.WriteLine("Ingredienser");
+            Console.WriteLine("-------------");
+            foreach (IIngredient ingredients in recipe.Ingredients)
+            {
+                Console.WriteLine(ingredients);
+            }
+            Console.WriteLine();
+            Console.WriteLine("Instruktioner");
+            Console.WriteLine("-------------");
+            foreach (string instructions in recipe.Instructions)
+            {
+                Console.WriteLine(instructions);
+            }
+            //throw new NotImplementedException();
         }
 
         public void Show(IEnumerable<IRecipe> recipes)
         {
-            throw new NotImplementedException();
+            foreach (IRecipe recipe in recipes)
+            {
+                Show(recipe);
+
+            }
+            //throw new NotImplementedException();
         }
     }
 }
